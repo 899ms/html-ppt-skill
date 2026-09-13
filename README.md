@@ -230,8 +230,13 @@ open templates/full-decks-index.html       # all 14 full decks
 
 ## Keyboard cheat sheet
 
+On a phone or tablet, **swipe left for the next slide, right for the previous
+one** — no keyboard needed. Pinch-zoom, vertical scrolling, the overview grid
+and the notes drawer are left alone.
+
 ```
 ← → Space PgUp PgDn Home End   navigate
+swipe ← / →  (touch)           navigate
 F                               fullscreen
 S                               open presenter window (magnetic cards)
 N                               quick notes drawer (bottom)

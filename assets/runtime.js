@@ -1033,6 +1033,62 @@
       }
     });
 
+    /* ===== Touch navigation =====
+     * Phones have no arrow keys (#15). Swipe left for next, right for prev.
+     *
+     * Deliberately passive: we never call preventDefault, so pinch-zoom and
+     * any native scrolling keep working and the browser is free to scroll
+     * while we are still deciding. A gesture only counts as a swipe if it is
+     * single-finger, clearly horizontal, long enough and quick enough —
+     * otherwise it falls through untouched.
+     */
+    (function initTouchNav(){
+      /* No capability sniffing on purpose. Touch listeners cost nothing on a
+         device that never fires them, and `ontouchstart in window` /
+         maxTouchPoints both misreport on touchscreen laptops and some
+         tablets — a guard here would silently remove the feature on exactly
+         the devices that need it. */
+      var SWIPE_MIN_PX = 50;    // shorter than this is a tap or a wobble
+      var SWIPE_RATIO  = 1.5;   // must be this much more horizontal than vertical
+      var SWIPE_MAX_MS = 800;   // slower than this is a drag, not a swipe
+
+      var x0 = 0, y0 = 0, t0 = 0, tracking = false;
+
+      function interactive(target) {
+        if (!target || !target.closest) return false;
+        /* Don't steal the gesture from the overview grid, the notes drawer,
+           or anything the author made scrollable or tappable. */
+        return !!target.closest('.overview, .notes-overlay, a, button, input, textarea, select, [data-no-swipe]');
+      }
+
+      document.addEventListener('touchstart', function(e){
+        if (e.touches.length !== 1 || interactive(e.target)) { tracking = false; return; }
+        x0 = e.touches[0].clientX;
+        y0 = e.touches[0].clientY;
+        t0 = Date.now();
+        tracking = true;
+      }, { passive: true });
+
+      document.addEventListener('touchmove', function(e){
+        /* A second finger means pinch-zoom — abandon the swipe. */
+        if (e.touches.length > 1) tracking = false;
+      }, { passive: true });
+
+      document.addEventListener('touchend', function(e){
+        if (!tracking) return;
+        tracking = false;
+        var t = e.changedTouches && e.changedTouches[0];
+        if (!t) return;
+        if (Date.now() - t0 > SWIPE_MAX_MS) return;
+        var dx = t.clientX - x0, dy = t.clientY - y0;
+        if (Math.abs(dx) < SWIPE_MIN_PX) return;
+        if (Math.abs(dx) < Math.abs(dy) * SWIPE_RATIO) return;
+        go(dx < 0 ? idx + 1 : idx - 1);
+      }, { passive: true });
+
+      document.addEventListener('touchcancel', function(){ tracking = false; }, { passive: true });
+    })();
+
     // hash deep-link
     function fromHash(){
       const m = /^#\/(\d+)/.exec(location.hash||'');

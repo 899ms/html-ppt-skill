@@ -31,6 +31,7 @@ offline; only the webfonts fall back to the system stack. See
 - **27 CSS animations** (`assets/animations/animations.css`) via `data-anim`
 - **20 canvas FX animations** (`assets/animations/fx/*.js`) via `data-fx` — particle-burst, confetti-cannon, firework, starfield, matrix-rain, knowledge-graph (force-directed), neural-net (pulses), constellation, orbit-ring, galaxy-swirl, word-cascade, letter-explode, chain-react, magnetic-field, data-stream, gradient-blob, sparkle-trail, shockwave, typewriter-multi, counter-explosion
 - **Keyboard runtime** (`assets/runtime.js`) — arrows, T (theme), A (anim), F/O, **S (presenter mode: magnetic-card popup with CURRENT / NEXT / SCRIPT / TIMER cards)**, N (notes drawer), R (reset timer in presenter)
+- **Touch navigation** — swipe left/right to change slides on phones and tablets
 - **FX runtime** (`assets/animations/fx-runtime.js`) — auto-inits `[data-fx]` on slide enter, cleans up on leave
 - **Showcase decks** for themes / layouts / animations / full-decks gallery
 - **Headless Chrome render script** for PNG export
@@ -227,6 +228,7 @@ capture, runtime.js exposes `#/N` deep-links, and render.sh iterates 1..N.
 
 ```
 ←  →  Space  PgUp  PgDn  Home  End    navigate
+swipe left / right (touch)              navigate — phones and tablets, no keyboard needed
 F                                       fullscreen
 S                                       open presenter window (magnetic cards: current/next/script/timer)
 N                                       quick notes drawer (bottom overlay)
