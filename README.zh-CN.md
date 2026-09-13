@@ -54,6 +54,60 @@ npx skills add https://github.com/lewislulu/html-ppt-skill
 > "做一个小红书图文，9 张，白底柔和风"
 > "做一份带演讲者模式的产品分享，我想要有逐字稿"
 
+## 离线 / 手动安装
+
+`npx skills add <url>` 需要目标机器能联网。下面三种方式，对网络的依赖依次递减。
+
+**1. 从本地副本安装。** 在任意能联网的机器上取到仓库，把整个目录搬过去（git、zip、U 盘都行），
+然后把 CLI 指向本地目录而不是 URL：
+
+```bash
+git clone https://github.com/lewislulu/html-ppt-skill
+npx skills add ./html-ppt-skill
+```
+
+`npx` 本身仍需下载一次 `skills` 包。完全隔离的机器请先在联网机器上
+`npm i -g skills`，或者直接用方式 2。
+
+**2. 纯手工拷贝 —— 不需要 Node，也不需要 CLI。** 一个 skill 就是一个根目录下放着
+`SKILL.md` 的文件夹。放进你的 agent 会扫描的目录即可：
+
+| Agent | 项目级 | 全局 |
+|---|---|---|
+| Claude Code | `.claude/skills/html-ppt/` | `~/.claude/skills/html-ppt/` |
+| Codex | `.agents/skills/html-ppt/` | `~/.codex/skills/html-ppt/` |
+| Cursor | `.agents/skills/html-ppt/` | `~/.cursor/skills/html-ppt/` |
+| OpenCode | `.agents/skills/html-ppt/` | `~/.config/opencode/skills/html-ppt/` |
+| Gemini CLI | `.agents/skills/html-ppt/` | `~/.gemini/skills/html-ppt/` |
+| Windsurf | `.windsurf/skills/html-ppt/` | `~/.codeium/windsurf/skills/html-ppt/` |
+
+```bash
+mkdir -p ~/.claude/skills
+cp -R html-ppt-skill ~/.claude/skills/html-ppt
+ls ~/.claude/skills/html-ppt/SKILL.md      # 必须存在
+```
+
+运行时只需要 `SKILL.md`、`assets/`、`templates/`、`references/`、`scripts/`。
+`docs/` 是约 4.6 MB 的 README 配图，离线拷贝时可以删掉。
+
+**3. 完全不用 agent。** 模板就是普通静态文件，可以直接用：
+
+```bash
+./scripts/new-deck.sh my-talk
+open examples/my-talk/index.html
+```
+
+### 断网能用吗？
+
+能，只有一个前提要说清楚。主题、布局、动效、演讲者模式、PNG 导出全部是本地静态
+HTML/CSS/JS，零构建、运行时不发请求。唯一的远程依赖是 `assets/fonts.css`，
+它 `@import` 了 Google Fonts。
+
+断网时这些 import 直接失败，浏览器回落到 `assets/base.css` 里已经声明好的系统字体栈
+（`-apple-system` / Helvetica / Georgia / Menlo），所以 deck 照常渲染，只是字体不同。
+如果要在离线环境下锁定字体，把 `assets/fonts.css` 换成指向自带字体文件的 `@font-face`
+规则，或者删掉这些 import、接受系统字体。
+
 ## Skill 内容一览
 
 | | 数量 | 位置 |

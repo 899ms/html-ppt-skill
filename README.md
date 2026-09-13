@@ -57,6 +57,65 @@ that supports AgentSkills can author presentations by asking things like:
 > "turn this outline into a pitch deck"
 > "做一个小红书图文，9 张，白底柔和风"
 
+## Offline / manual install
+
+`npx skills add <url>` needs network on the target machine. Three alternatives,
+in decreasing order of how much network they need.
+
+**1. Install from a local copy.** Fetch the repo anywhere, move the folder over
+(git, zip, USB), then point the CLI at the directory instead of the URL:
+
+```bash
+git clone https://github.com/lewislulu/html-ppt-skill
+npx skills add ./html-ppt-skill
+```
+
+`npx` still downloads the `skills` package itself once. For a fully air-gapped
+machine, run `npm i -g skills` on a connected one first, or use method 2.
+
+**2. Copy it in by hand — no Node, no CLI.** A skill is just a folder with
+`SKILL.md` at its root. Drop it in the directory your agent scans:
+
+| Agent | Project scope | Global scope |
+|---|---|---|
+| Claude Code | `.claude/skills/html-ppt/` | `~/.claude/skills/html-ppt/` |
+| Codex | `.agents/skills/html-ppt/` | `~/.codex/skills/html-ppt/` |
+| Cursor | `.agents/skills/html-ppt/` | `~/.cursor/skills/html-ppt/` |
+| OpenCode | `.agents/skills/html-ppt/` | `~/.config/opencode/skills/html-ppt/` |
+| Gemini CLI | `.agents/skills/html-ppt/` | `~/.gemini/skills/html-ppt/` |
+| Windsurf | `.windsurf/skills/html-ppt/` | `~/.codeium/windsurf/skills/html-ppt/` |
+
+```bash
+mkdir -p ~/.claude/skills
+cp -R html-ppt-skill ~/.claude/skills/html-ppt
+ls ~/.claude/skills/html-ppt/SKILL.md      # must exist
+```
+
+Only `SKILL.md`, `assets/`, `templates/`, `references/` and `scripts/` are
+needed at runtime. `docs/` is ~4.6 MB of README artwork and can be dropped from
+an offline copy.
+
+**3. No agent at all.** The templates are plain static files — usable directly:
+
+```bash
+./scripts/new-deck.sh my-talk
+open examples/my-talk/index.html
+```
+
+### Does it run without a network?
+
+Yes, with one caveat. Themes, layouts, animations, presenter mode and PNG
+rendering are all local static HTML/CSS/JS with no build step and no runtime
+fetches. The single remote dependency is `assets/fonts.css`, which `@import`s
+Google Fonts.
+
+Offline, those imports simply fail and the browser falls back to the system
+stack already declared in `assets/base.css` (`-apple-system` / Helvetica /
+Georgia / Menlo), so decks render correctly — just in different typefaces. To
+pin typography offline, replace `assets/fonts.css` with `@font-face` rules
+pointing at font files you ship yourself, or delete the imports and accept the
+system stack.
+
 ## What's in the box
 
 | | Count | Where |

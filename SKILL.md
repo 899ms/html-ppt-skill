@@ -17,6 +17,12 @@ npx skills add https://github.com/lewislulu/html-ppt-skill
 
 One command, no build. Pure static HTML/CSS/JS with only CDN webfonts.
 
+No network on the target machine? Point the CLI at a local copy
+(`npx skills add ./html-ppt-skill`), or just copy this folder into your agent's
+skills directory — `~/.claude/skills/html-ppt/` for Claude Code. Decks render
+offline; only the webfonts fall back to the system stack. See
+[README.md](README.md#offline--manual-install).
+
 ## What the skill gives you
 
 - **36 themes** (`assets/themes/*.css`) — minimal-white, editorial-serif, soft-pastel, sharp-mono, arctic-cool, sunset-warm, catppuccin-latte/mocha, dracula, tokyo-night, nord, solarized-light, gruvbox-dark, rose-pine, neo-brutalism, glassmorphism, bauhaus, swiss-grid, terminal-green, xiaohongshu-white, rainbow-gradient, aurora, blueprint, memphis-pop, cyberpunk-neon, y2k-chrome, retro-tv, japanese-minimal, vaporwave, midcentury, corporate-clean, academic-paper, news-broadcast, pitch-deck-vc, magazine-bold, engineering-whiteprint
