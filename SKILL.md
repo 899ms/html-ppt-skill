@@ -27,7 +27,7 @@ offline; only the webfonts fall back to the system stack. See
 
 - **36 themes** (`assets/themes/*.css`) — minimal-white, editorial-serif, soft-pastel, sharp-mono, arctic-cool, sunset-warm, catppuccin-latte/mocha, dracula, tokyo-night, nord, solarized-light, gruvbox-dark, rose-pine, neo-brutalism, glassmorphism, bauhaus, swiss-grid, terminal-green, xiaohongshu-white, rainbow-gradient, aurora, blueprint, memphis-pop, cyberpunk-neon, y2k-chrome, retro-tv, japanese-minimal, vaporwave, midcentury, corporate-clean, academic-paper, news-broadcast, pitch-deck-vc, magazine-bold, engineering-whiteprint
 - **15 full-deck templates** (`templates/full-decks/<name>/`) — complete multi-slide decks with scoped `.tpl-<name>` CSS. 8 extracted from real-world decks (xhs-white-editorial, graphify-dark-graph, knowledge-arch-blueprint, hermes-cyber-terminal, obsidian-claude-gradient, testing-safety-alert, xhs-pastel-card, dir-key-nav-minimal), 7 scenario scaffolds (pitch-deck, product-launch, tech-sharing, weekly-report, xhs-post 3:4, course-module, **presenter-mode-reveal** — 演讲者模式专用)
-- **31 layouts** (`templates/single-page/*.html`) with realistic demo data
+- **36 layouts** (`templates/single-page/*.html`) with realistic demo data, including **5 real-image layouts** (single / full-bleed / image+text / gallery / before-after)
 - **27 CSS animations** (`assets/animations/animations.css`) via `data-anim`
 - **20 canvas FX animations** (`assets/animations/fx/*.js`) via `data-fx` — particle-burst, confetti-cannon, firework, starfield, matrix-rain, knowledge-graph (force-directed), neural-net (pulses), constellation, orbit-ring, galaxy-swirl, word-cascade, letter-explode, chain-react, magnetic-field, data-stream, gradient-blob, sparkle-trail, shockwave, typewriter-multi, counter-explosion
 - **Keyboard runtime** (`assets/runtime.js`) — arrows, T (theme), A (anim), F/O, **S (presenter mode: magnetic-card popup with CURRENT / NEXT / SCRIPT / TIMER cards)**, N (notes drawer), R (reset timer in presenter)
@@ -143,7 +143,10 @@ Only after those are clear, scaffold the deck and start writing.
   from CSS variables defined in `assets/base.css` and overridden by a theme.
   Good: `color: var(--text-1)`. Bad: `color: #111`.
 - **Don't invent new layout files.** Prefer composing existing ones. Only add
-  a new `templates/single-page/*.html` if none of the 30 fit.
+  a new `templates/single-page/*.html` if none of the 36 fit.
+- **Putting images on a slide?** Start from one of the five `image-*` layouts and
+  use `.img-frame` — see *Images* below. Never drop a bare `<img>` into a slide:
+  an unframed image ignores the slide's height and pushes the rest off the page.
 - **Respect chrome slots.** `.deck-header`, `.deck-footer`, `.slide-number`
   and the progress bar are provided by `assets/base.css` + `runtime.js`.
 - **Keyboard-first.** Always include the runtime, e.g.
@@ -167,6 +170,39 @@ Only after those are clear, scaffold the deck and start writing.
   by default — it only appears in the S overlay. Slides should contain ONLY
   audience-facing content (titles, bullet points, data, charts, images).
 
+## Images
+
+Five layouts in `templates/single-page/` take real images. Pick by how many
+images the page has to carry:
+
+| I have… | Use | Why |
+|---|---|---|
+| one screenshot / diagram / chart | `image-single.html` | `.img-frame.contain` — letterboxed, **never cropped** |
+| one photo that should carry the page | `image-full-bleed.html` | fills the slide, gradient scrim keeps the title readable |
+| one image plus an argument | `image-text-split.html` | 50/50; add `flip` to `.split` to move the image right |
+| 3–6 images | `image-gallery.html` | uniform grid; mixed source ratios are normalised by the frame |
+| a before and an after | `image-compare.html` | both sides identical size, conclusion under each |
+| an uneven bento wall | `image-grid.html` | existing gradient-placeholder grid |
+
+All of them are built on one primitive from `assets/base.css`:
+
+```html
+<figure class="img-frame"><img src="shot.png" alt=""></figure>
+<figure class="img-frame contain" style="--img-ratio:4/3"><img src="diagram.svg" alt=""></figure>
+```
+
+- `.img-frame` owns the **aspect ratio and the crop**; the `<img>` fills it with
+  `object-fit: cover`. That's what lets a user swap in a photo of any shape
+  without the layout breaking.
+- `.img-frame.contain` letterboxes instead of cropping — **always use it for
+  screenshots, diagrams and logos.**
+- `--img-ratio` (default `16/10`) and `--img-pos` (`object-position`) tune it.
+- `.img-scrim` / `.img-cap` / `.img-tag` are the scrim, caption and corner pill.
+- Images referenced from a deck are resolved relative to the deck's own
+  `index.html` — keep them in the deck folder, e.g. `examples/my-talk/shot.png`.
+- `assets/demo-images/` holds the placeholder artwork used by these layouts:
+  hand-written SVG, ~1 KB each, **no network needed**.
+
 ## Writing guide
 
 See [references/authoring-guide.md](references/authoring-guide.md) for a
@@ -177,7 +213,7 @@ Chinese + English deck, and how to export.
 ## Catalogs (load when needed)
 
 - [references/themes.md](references/themes.md) — all 36 themes with when-to-use.
-- [references/layouts.md](references/layouts.md) — all 31 layout types.
+- [references/layouts.md](references/layouts.md) — all 36 layout types.
 - [references/animations.md](references/animations.md) — 27 CSS + 20 canvas FX animations.
 - [references/full-decks.md](references/full-decks.md) — all 15 full-deck templates.
 - [references/presenter-mode.md](references/presenter-mode.md) — **演讲者模式 + 逐字稿编写指南（技术分享/演讲必看）**.
@@ -191,6 +227,7 @@ html-ppt/
 ├── references/              (detailed catalogs, load as needed)
 ├── assets/
 │   ├── base.css             (tokens + primitives — do not edit per deck)
+│   ├── demo-images/*.svg    (tiny offline placeholders for the image-* layouts)
 │   ├── fonts.css            (webfont imports)
 │   ├── runtime.js           (keyboard + presenter + overview + theme cycle)
 │   ├── themes/*.css         (36 token overrides, one per theme)
@@ -201,11 +238,11 @@ html-ppt/
 ├── templates/
 │   ├── deck.html                  (minimal 6-slide starter)
 │   ├── theme-showcase.html        (36 slides, iframe-isolated per theme)
-│   ├── layout-showcase.html       (iframe tour of all 31 layouts)
+│   ├── layout-showcase.html       (iframe tour of all 36 layouts)
 │   ├── animation-showcase.html    (20 FX + 27 CSS animation slides)
 │   ├── full-decks-index.html      (gallery of all 14 full-deck templates)
 │   ├── full-decks/<name>/         (14 scoped multi-slide deck templates)
-│   └── single-page/*.html         (31 layout files with demo data)
+│   └── single-page/*.html         (36 layout files with demo data)
 ├── scripts/
 │   ├── new-deck.sh                (scaffold a deck from deck.html)
 │   └── render.sh                  (headless Chrome → PNG)

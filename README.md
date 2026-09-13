@@ -1,7 +1,7 @@
 # html-ppt — HTML PPT Studio
 
 > A world-class AgentSkill for producing professional HTML presentations in
-> **36 themes**, **15 full-deck templates**, **31 page layouts**,
+> **36 themes**, **15 full-deck templates**, **36 page layouts**,
 > **47 animations** (27 CSS + 20 canvas FX), and a **true presenter mode**
 > with pixel-perfect previews + speaker script + timer — all pure static
 > HTML/CSS/JS, no build step.
@@ -12,7 +12,7 @@
 
 ![html-ppt — cover with live previews](docs/readme/hero.gif)
 
-> One command installs **36 themes × 20 canvas FX × 31 layouts × 15 full decks + presenter mode**. Every preview above is a live iframe of a real template file rendering inside the deck — no screenshots, no mock-ups.
+> One command installs **36 themes × 20 canvas FX × 36 layouts × 15 full decks + presenter mode**. Every preview above is a live iframe of a real template file rendering inside the deck — no screenshots, no mock-ups.
 
 ## 🎤 Presenter Mode (new!)
 
@@ -123,7 +123,7 @@ system stack.
 | 🎤 **Presenter mode** | **NEW** | `S` key / `?preview=N` |
 | 🎨 **Themes** | **36** | `assets/themes/*.css` |
 | 📑 **Full-deck templates** | **15** | `templates/full-decks/<name>/` |
-| 🧩 **Single-page layouts** | **31** | `templates/single-page/*.html` |
+| 🧩 **Single-page layouts** | **36** | `templates/single-page/*.html` |
 | ✨ **CSS animations** | **27** | `assets/animations/animations.css` |
 | 💥 **Canvas FX animations** | **20** | `assets/animations/fx/*.js` |
 | 🖼️ **Showcase decks** | 4 | `templates/*-showcase.html` |
@@ -174,7 +174,7 @@ gallery in `templates/full-decks-index.html`.
 
 ![31 single-page layouts](docs/readme/layouts.png)
 
-### 31 Single-page layouts
+### 36 Single-page layouts
 
 cover · toc · section-divider · bullets · two-column · three-column ·
 big-quote · stat-highlight · kpi-grid · table · code · diff · terminal ·
@@ -185,9 +185,9 @@ chart-pie · chart-radar · arch-diagram · process-steps · cta · thanks
 Every layout ships with realistic demo data so you can drop it into a deck
 and immediately see it render.
 
-![31 layouts auto-cycling through real template files](docs/readme/layouts-live.gif)
+![36 layouts auto-cycling through real template files](docs/readme/layouts-live.gif)
 
-*The big iframe is loading `templates/single-page/<name>.html` directly and cycling through all 31 layouts every 2.8 seconds.*
+*The big iframe is loading `templates/single-page/<name>.html` directly and cycling through all 36 layouts every 2.8 seconds.*
 
 ![47 animations — 27 CSS + 20 canvas FX](docs/readme/animations.png)
 
@@ -219,7 +219,7 @@ module auto-initialised on slide enter via `fx-runtime.js`.
 
 # Browse everything
 open templates/theme-showcase.html         # all 36 themes (iframe-isolated)
-open templates/layout-showcase.html        # all 31 layouts
+open templates/layout-showcase.html        # all 36 layouts
 open templates/animation-showcase.html     # all 47 animations
 open templates/full-decks-index.html       # all 14 full decks
 
@@ -227,6 +227,30 @@ open templates/full-decks-index.html       # all 14 full decks
 ./scripts/render.sh templates/theme-showcase.html
 ./scripts/render.sh examples/my-talk/index.html 12
 ```
+
+## Images on a slide
+
+Five layouts take real images — pick by how many the page has to carry:
+
+| I have… | Layout |
+|---|---|
+| one screenshot / diagram / chart | `image-single.html` — letterboxed, never cropped |
+| one photo that should carry the page | `image-full-bleed.html` — fills the slide, scrim keeps the title readable |
+| one image plus an argument | `image-text-split.html` — 50/50, `flip` to swap sides |
+| 3–6 images | `image-gallery.html` — uniform grid, one caption each |
+| a before and an after | `image-compare.html` — both sides identical size |
+
+They share one primitive from `assets/base.css`:
+
+```html
+<figure class="img-frame"><img src="shot.png" alt=""></figure>          <!-- crops to fill -->
+<figure class="img-frame contain"><img src="diagram.svg" alt=""></figure> <!-- letterboxed -->
+```
+
+The frame owns the aspect ratio (`--img-ratio`) and the crop, so you can drop in
+a portrait, square or ultrawide image without touching the layout. Placeholder
+artwork in `assets/demo-images/` is hand-written SVG (~1 KB each) so every
+layout renders **offline**.
 
 ## Keyboard cheat sheet
 
@@ -267,7 +291,7 @@ html-ppt-skill/
 ├── templates/
 │   ├── deck.html                 minimal starter
 │   ├── theme-showcase.html       iframe-isolated theme tour
-│   ├── layout-showcase.html      all 31 layouts
+│   ├── layout-showcase.html      all 36 layouts
 │   ├── animation-showcase.html   47 animation slides
 │   ├── full-decks-index.html     14-deck gallery
 │   ├── full-decks/<name>/        14 scoped multi-slide decks

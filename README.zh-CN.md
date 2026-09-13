@@ -1,7 +1,7 @@
 # html-ppt · HTML PPT 工作室
 
 > 一款专业级的 AgentSkill，让 AI 做出真正能打的 HTML 演示文稿。
-> **36 套主题**、**15 套完整 deck 模板**、**31 种页面布局**、**47 个动效**
+> **36 套主题**、**15 套完整 deck 模板**、**36 种页面布局**、**47 个动效**
 > (27 个 CSS + 20 个 Canvas FX)，加上全新的 **演讲者模式** —— 像素级
 > 完美预览 + 逐字稿提词器 + 计时器。纯静态 HTML/CSS/JS，无需构建。
 
@@ -11,7 +11,7 @@
 
 ![html-ppt 封面 · 实时预览](docs/readme/hero.gif)
 
-> 一行命令装好 **36 主题 × 20 Canvas FX × 31 布局 × 15 完整 deck + 演讲者模式**。
+> 一行命令装好 **36 主题 × 20 Canvas FX × 36 布局 × 15 完整 deck + 演讲者模式**。
 > 上图里的每一个预览都是真实的 iframe 加载真实模板文件 —— 不是截图，不是色卡。
 
 ## 🎤 演讲者模式（全新）
@@ -115,7 +115,7 @@ HTML/CSS/JS，零构建、运行时不发请求。唯一的远程依赖是 `asse
 | 🎤 **演讲者模式** | **新增** | `S` 键 / `?preview=N` |
 | 🎨 **主题** | **36** | `assets/themes/*.css` |
 | 📑 **完整 deck 模板** | **15** | `templates/full-decks/<name>/` |
-| 🧩 **单页布局** | **31** | `templates/single-page/*.html` |
+| 🧩 **单页布局** | **36** | `templates/single-page/*.html` |
 | ✨ **CSS 动画** | **27** | `assets/animations/animations.css` |
 | 💥 **Canvas FX 动画** | **20** | `assets/animations/fx/*.js` |
 | 🖼️ **Showcase deck** | 4 | `templates/*-showcase.html` |
@@ -169,7 +169,7 @@ HTML/CSS/JS，零构建、运行时不发请求。唯一的远程依赖是 `asse
 
 ![31 种单页布局](docs/readme/layouts.png)
 
-### 31 种单页布局
+### 36 种单页布局
 
 cover · toc · section-divider · bullets · two-column · three-column ·
 big-quote · stat-highlight · kpi-grid · table · code · diff · terminal ·
@@ -217,7 +217,7 @@ chart-pie · chart-radar · arch-diagram · process-steps · cta · thanks
 
 # 浏览所有内容
 open templates/theme-showcase.html         # 全部 36 主题（iframe 隔离）
-open templates/layout-showcase.html        # 全部 31 布局
+open templates/layout-showcase.html        # 全部 36 布局
 open templates/animation-showcase.html     # 全部 47 动效
 open templates/full-decks-index.html       # 全部 15 个完整 deck
 
@@ -225,6 +225,29 @@ open templates/full-decks-index.html       # 全部 15 个完整 deck
 ./scripts/render.sh templates/theme-showcase.html
 ./scripts/render.sh examples/my-talk/index.html 12
 ```
+
+## 放图片的版式
+
+五个版式用的是真实 `<img>`，按「这一页要放几张图」挑：
+
+| 我有… | 版式 |
+|---|---|
+| 一张截图 / 示意图 / 图表 | `image-single.html` —— 完整显示，**不裁剪** |
+| 一张想撑满整页的照片 | `image-full-bleed.html` —— 整页铺满，底部压暗保证标题可读 |
+| 一张图 + 一段论述 | `image-text-split.html` —— 各占一半，加 `flip` 左右互换 |
+| 3～6 张图 | `image-gallery.html` —— 等大网格，每张一句话 |
+| 改版前 / 改版后 | `image-compare.html` —— 两侧严格同尺寸 |
+
+它们共用 `assets/base.css` 里的同一个原语：
+
+```html
+<figure class="img-frame"><img src="shot.png" alt=""></figure>            <!-- 裁剪填满 -->
+<figure class="img-frame contain"><img src="diagram.svg" alt=""></figure> <!-- 完整显示 -->
+```
+
+比例和裁剪由**框**决定（`--img-ratio`），不由图片决定 —— 竖图、方图、超宽图
+直接换 `src` 就行，版式不用改。示例图放在 `assets/demo-images/`，是手写的
+SVG（每个约 1KB），所以这些版式**离线也能正常渲染**。
 
 ## 键盘快捷键
 
@@ -250,7 +273,7 @@ html-ppt-skill/
 ├── README.zh-CN.md               本文件
 ├── references/                   详细文档
 │   ├── themes.md                 36 主题 + 使用场景
-│   ├── layouts.md                31 布局
+│   ├── layouts.md                36 布局
 │   ├── animations.md             27 CSS + 20 FX 目录
 │   ├── full-decks.md             15 完整 deck 模板
 │   ├── presenter-mode.md         🎤 演讲者模式 + 逐字稿指南
@@ -267,11 +290,11 @@ html-ppt-skill/
 ├── templates/
 │   ├── deck.html                 最小起步模板
 │   ├── theme-showcase.html       iframe 隔离的主题 tour
-│   ├── layout-showcase.html      全部 31 布局
+│   ├── layout-showcase.html      全部 36 布局
 │   ├── animation-showcase.html   47 动画 slide
 │   ├── full-decks-index.html     15 deck gallery
 │   ├── full-decks/<name>/        15 个 scoped 多页 deck 模板
-│   └── single-page/*.html        31 个布局文件（带示例数据）
+│   └── single-page/*.html        36 个布局文件（带示例数据）
 ├── scripts/
 │   ├── new-deck.sh               脚手架
 │   ├── render.sh                 headless Chrome → PNG
