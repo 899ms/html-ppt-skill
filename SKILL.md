@@ -150,6 +150,8 @@ Only after those are clear, scaffold the deck and start writing.
   an unframed image ignores the slide's height and pushes the rest off the page.
 - **Respect chrome slots.** `.deck-header`, `.deck-footer`, `.slide-number`
   and the progress bar are provided by `assets/base.css` + `runtime.js`.
+- **Add a logo declaratively, once.** Put `data-logo` on `<body>` — don't paste
+  an `<img>` into every slide. See *Custom logo* below.
 - **Keyboard-first.** Always include the runtime, e.g.
   `<script src="../assets/runtime.js"></script>`, so the deck supports
   ← → / T / A / F / S / O / hash deep-links.
@@ -203,6 +205,40 @@ All of them are built on one primitive from `assets/base.css`:
   `index.html` — keep them in the deck folder, e.g. `examples/my-talk/shot.png`.
 - `assets/demo-images/` holds the placeholder artwork used by these layouts:
   hand-written SVG, ~1 KB each, **no network needed**.
+
+## Custom logo
+
+To brand a deck with a company / product logo, declare it once on `<body>`:
+
+```html
+<body data-logo="logo.svg"
+      data-logo-position="bottom-right"
+      data-logo-size="40px">
+```
+
+| Attribute | Default | Notes |
+|---|---|---|
+| `data-logo` | — | Image URL, relative to the deck's own HTML file. Required. |
+| `data-logo-position` | `top-right` | `top-left` / `top-right` / `bottom-left` / `bottom-right` |
+| `data-logo-size` | `44px` | Any CSS length; sets the logo's **height**, width follows the aspect ratio |
+| `data-logo-opacity` | `.9` | `1` for full strength |
+| `data-logo-alt` | `""` | Alt text |
+
+- **Skip it on one slide** with `<section class="slide" data-no-logo>` — usually
+  the cover and any full-bleed image slide that carries its own branding.
+- **Fine-tune the inset** with `--logo-inset-x` / `--logo-inset-y` on `.deck-logo`.
+- **Place it by hand** instead, if you want it inside the chrome slots or in a
+  spot the four presets don't cover:
+  ```html
+  <div class="deck">
+    <img class="deck-logo" data-pos="bottom-left" src="logo.svg" alt="">
+  ```
+  This path needs no JS at all — `base.css` styles both the same way.
+- The logo shows in the **presenter preview**, and on **every page of a
+  print/PDF export** (unlike the header/footer/progress chrome, which print
+  hides). `data-no-logo` slides are skipped there too. Per-page printing is
+  painted by `runtime.js` + `@media print`; a deck that omits the runtime still
+  gets the logo on screen, but only on one page of a PDF.
 
 ## Writing guide
 

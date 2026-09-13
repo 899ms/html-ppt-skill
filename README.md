@@ -252,6 +252,23 @@ a portrait, square or ultrawide image without touching the layout. Placeholder
 artwork in `assets/demo-images/` is hand-written SVG (~1 KB each) so every
 layout renders **offline**.
 
+## Custom logo
+
+Brand a deck with one attribute — no per-slide `<img>` copy-paste:
+
+```html
+<body data-logo="logo.svg" data-logo-position="bottom-right" data-logo-size="40px">
+```
+
+`data-logo-position` takes `top-left` / `top-right` / `bottom-left` /
+`bottom-right` (default `top-right`); `data-logo-size` sets the height.
+Skip it on a single slide with `<section class="slide" data-no-logo>` — handy
+for the cover. The logo also shows in the presenter preview, and on **every
+page** of a PDF export (skipping the `data-no-logo` ones).
+
+Prefer to place it yourself? `<img class="deck-logo" data-pos="top-left" src="logo.svg">`
+inside `.deck` works with no JS at all.
+
 ## Keyboard cheat sheet
 
 On a phone or tablet, **swipe left for the next slide, right for the previous
