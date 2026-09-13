@@ -73,6 +73,42 @@
 
     initCanvasFit(deck);
 
+    /* ===== custom logo (issue #11) =====
+     * Deliberately initialised BEFORE the preview-mode branch below: the
+     * presenter's "pixel-perfect" preview is the audience view, so it has to
+     * carry the logo too. A hand-authored <img class="deck-logo"> is left
+     * exactly where it is — base.css styles both paths identically, so a deck
+     * can have a logo with runtime.js absent entirely.
+     */
+    const logoEl = (function initLogo(){
+      const attr = (n) => document.body.getAttribute(n) || document.documentElement.getAttribute(n);
+      let el = deck.querySelector(':scope > .deck-logo');
+      if (!el) {
+        const src = attr('data-logo');
+        if (!src) return null;
+        el = document.createElement('img');
+        el.className = 'deck-logo';
+        el.src = src;
+        el.alt = attr('data-logo-alt') || '';
+        deck.appendChild(el);
+      }
+      if (!el.hasAttribute('data-pos')) {
+        el.setAttribute('data-pos', attr('data-logo-position') || 'top-right');
+      }
+      const size = attr('data-logo-size');
+      if (size) el.style.setProperty('--logo-size', size);
+      const opacity = attr('data-logo-opacity');
+      if (opacity) el.style.setProperty('--logo-opacity', opacity);
+      return el;
+    })();
+
+    /* Per-slide opt-out: <section class="slide" data-no-logo> — covers and
+       full-bleed image slides usually carry their own branding. */
+    function syncLogo(slide){
+      if (!logoEl) return;
+      logoEl.style.display = (slide && slide.hasAttribute('data-no-logo')) ? 'none' : '';
+    }
+
     const previewOnlyIdx = getPreviewIdx();
     const isPreviewMode = previewOnlyIdx >= 0 && previewOnlyIdx < slides.length;
 
@@ -91,6 +127,7 @@
         });
       }
       showSlide(previewOnlyIdx);
+      syncLogo(slides[previewOnlyIdx]);
       /* Hide chrome that the presenter shouldn't see in preview */
       const hideSel = '.progress-bar, .notes-overlay, .overview, .notes, aside.notes, .speaker-notes';
       document.querySelectorAll(hideSel).forEach(el => { el.style.display = 'none'; });
@@ -117,7 +154,7 @@
         if (!e.data) return;
         if (e.data.type === 'preview-goto') {
           const n = parseInt(e.data.idx, 10);
-          if (n >= 0 && n < slides.length) showSlide(n);
+          if (n >= 0 && n < slides.length) { showSlide(n); syncLogo(slides[n]); }
         } else if (e.data.type === 'preview-theme' && e.data.name) {
           let link = document.getElementById('theme-link');
           if (!link) {
@@ -255,6 +292,7 @@
         s.classList.toggle('is-prev', i<n);
       });
       idx = n;
+      syncLogo(slides[n]);
       barFill.style.width = ((n+1)/total*100)+'%';
       const numEl = document.querySelector('.slide-number');
       if (numEl) { numEl.setAttribute('data-current', n+1); numEl.setAttribute('data-total', total); }

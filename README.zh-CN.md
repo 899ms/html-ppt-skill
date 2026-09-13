@@ -249,6 +249,23 @@ open templates/full-decks-index.html       # 全部 15 个完整 deck
 直接换 `src` 就行，版式不用改。示例图放在 `assets/demo-images/`，是手写的
 SVG（每个约 1KB），所以这些版式**离线也能正常渲染**。
 
+## 自定义 LOGO
+
+一个属性给整份 deck 加上公司 / 产品 LOGO，不用每页粘一个 `<img>`：
+
+```html
+<body data-logo="logo.svg" data-logo-position="bottom-right" data-logo-size="40px">
+```
+
+`data-logo-position` 可选 `top-left` / `top-right` / `bottom-left` /
+`bottom-right`（默认 `top-right`）；`data-logo-size` 设置高度，宽度按比例。
+某一页不想要（通常是封面）就写 `<section class="slide" data-no-logo>`。
+演讲者模式的预览和导出 PDF 里同样带 LOGO。
+
+想自己摆位置：在 `.deck` 里直接写
+`<img class="deck-logo" data-pos="top-left" src="logo.svg">`，
+样式在 `base.css` 里，**完全不依赖 JS**。
+
 ## 键盘快捷键
 
 手机 / 平板上**向左划到下一页，向右划回上一页**，不需要键盘。

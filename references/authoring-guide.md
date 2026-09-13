@@ -69,6 +69,27 @@ For each outline item:
 5. Set `data-title="..."` (used by the Overview grid).
 6. Add `<div class="notes">…</div>` with speaker notes.
 
+### Branding the deck with a logo
+
+Declare it **once** on `<body>`, not per slide:
+
+```html
+<body data-logo="logo.svg" data-logo-position="bottom-right" data-logo-size="40px">
+```
+
+Position is one of `top-left` / `top-right` / `bottom-left` / `bottom-right`
+(default `top-right`); `data-logo-size` sets the height. Drop the logo from an
+individual slide with `<section class="slide" data-no-logo>` — the cover usually
+already shows the brand at full size.
+
+The image path is resolved relative to the deck's own HTML file, so keep the
+file next to `index.html` (`examples/my-talk/logo.svg` → `data-logo="logo.svg"`).
+Never hand-edit the `../` depth in asset paths — see the rule in section 10.
+
+If the four presets don't fit, write the element yourself inside `.deck`:
+`<img class="deck-logo" data-pos="top-left" src="logo.svg" alt="">`. That works
+with `runtime.js` absent entirely, since the styling lives in `base.css`.
+
 ## 6. Add animations sparingly
 
 Rules of thumb:
