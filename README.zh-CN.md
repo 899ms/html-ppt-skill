@@ -260,7 +260,8 @@ SVG（每个约 1KB），所以这些版式**离线也能正常渲染**。
 `data-logo-position` 可选 `top-left` / `top-right` / `bottom-left` /
 `bottom-right`（默认 `top-right`）；`data-logo-size` 设置高度，宽度按比例。
 某一页不想要（通常是封面）就写 `<section class="slide" data-no-logo>`。
-演讲者模式的预览和导出 PDF 里同样带 LOGO。
+演讲者模式的预览里带 LOGO；导出 PDF 时**每一页都带**（写了 `data-no-logo`
+的那页除外）。
 
 想自己摆位置：在 `.deck` 里直接写
 `<img class="deck-logo" data-pos="top-left" src="logo.svg">`，

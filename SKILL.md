@@ -234,8 +234,11 @@ To brand a deck with a company / product logo, declare it once on `<body>`:
     <img class="deck-logo" data-pos="bottom-left" src="logo.svg" alt="">
   ```
   This path needs no JS at all — `base.css` styles both the same way.
-- The logo shows in the **presenter preview** and in **print/PDF export**
-  (unlike the header/footer/progress chrome, which print hides).
+- The logo shows in the **presenter preview**, and on **every page of a
+  print/PDF export** (unlike the header/footer/progress chrome, which print
+  hides). `data-no-logo` slides are skipped there too. Per-page printing is
+  painted by `runtime.js` + `@media print`; a deck that omits the runtime still
+  gets the logo on screen, but only on one page of a PDF.
 
 ## Writing guide
 
