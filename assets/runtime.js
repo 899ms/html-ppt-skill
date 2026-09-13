@@ -37,11 +37,41 @@
     return m ? parseInt(m[1], 10) - 1 : -1;
   }
 
+  /* ========== Design-canvas fit (issue #20) ==========
+   * Slides are authored against a fixed canvas (1920x1080 by default). The
+   * canvas is scaled — never reflowed — to fit whatever viewport it lands in,
+   * so the browser view, the presenter preview, the overview thumbnail and a
+   * headless PNG render are all the same picture.
+   *
+   * Opt out with <body data-fit="fluid">. Override the canvas per deck with
+   * <div class="deck" data-w="1080" data-h="1440"> (e.g. a 3:4 小红书 post).
+   */
+  function initCanvasFit(deck) {
+    if (document.body.getAttribute('data-fit') === 'fluid') return;
+
+    const w = parseInt(deck.getAttribute('data-w'), 10) || 1920;
+    const h = parseInt(deck.getAttribute('data-h'), 10) || 1080;
+    deck.style.setProperty('--deck-w', w + 'px');
+    deck.style.setProperty('--deck-h', h + 'px');
+
+    function fit() {
+      const scale = Math.min(window.innerWidth / w, window.innerHeight / h);
+      deck.style.setProperty('--deck-scale', String(scale));
+    }
+    fit();
+    window.addEventListener('resize', fit);
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', fit);
+    /* Webfonts can land after first paint; re-fit once they do. */
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit).catch(function(){});
+  }
+
   ready(function () {
     const deck = document.querySelector('.deck');
     if (!deck) return;
     const slides = Array.from(deck.querySelectorAll('.slide'));
     if (!slides.length) return;
+
+    initCanvasFit(deck);
 
     const previewOnlyIdx = getPreviewIdx();
     const isPreviewMode = previewOnlyIdx >= 0 && previewOnlyIdx < slides.length;

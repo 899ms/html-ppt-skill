@@ -37,13 +37,36 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text-1);
   font-family:var(--font-sans);font-weight:400;line-height:1.6;
   -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
   letter-spacing:var(--letter-normal)}
+
+/* Viewport host: centres the fixed-size design canvas and letterboxes the rest.
+   Every px in a slide therefore means the same thing in the browser, in the
+   presenter preview, in the overview thumbnail and in a headless render. */
+body{width:100vw;height:100vh;overflow:hidden;
+  display:flex;align-items:center;justify-content:center}
 img,svg,video{max-width:100%;display:block}
 a{color:var(--accent);text-decoration:none}
 a:hover{text-decoration:underline}
 code,kbd,pre,samp{font-family:var(--font-mono)}
 
 /* ================= SLIDE SYSTEM ================= */
-.deck{position:relative;width:100vw;height:100vh;overflow:hidden;background:var(--bg)}
+/* ================= DESIGN CANVAS =================
+   Slides are authored against a FIXED 1920x1080 canvas and scaled to fit the
+   viewport by runtime.js (--deck-scale). Before this, .deck was 100vw/100vh
+   while type and spacing stayed in absolute px, so a 1512x850 laptop window
+   and a 1920x1080 render produced visibly different pages (issue #20).
+
+   Escape hatches:
+     <body data-fit="fluid">      -> old behaviour, canvas follows the viewport
+     <div class="deck" data-w=".." data-h="..">  -> custom canvas (e.g. 1080x1440 for 3:4)
+*/
+.deck{position:relative;flex:none;
+  width:var(--deck-w,1920px);height:var(--deck-h,1080px);
+  overflow:hidden;background:var(--bg);
+  transform:scale(var(--deck-scale,1));transform-origin:center center}
+
+/* Opt out: fluid canvas, exactly what the deck did before. */
+body[data-fit="fluid"]{display:block}
+body[data-fit="fluid"] .deck{width:100vw;height:100vh;transform:none}
 .slide{
   position:absolute;inset:0;
   display:flex;flex-direction:column;justify-content:center;
@@ -58,7 +81,8 @@ code,kbd,pre,samp{font-family:var(--font-mono)}
 .slide.is-prev{transform:translateX(-30px)}
 
 /* single-page standalone (used when a layout file is opened directly) */
-body.single .slide{position:relative;width:100vw;height:100vh;opacity:1;transform:none;pointer-events:auto}
+body.single .slide{position:relative;width:100%;height:100%;opacity:1;transform:none;pointer-events:auto}
+body[data-fit="fluid"].single .slide{width:100vw;height:100vh}
 
 /* ================= TYPOGRAPHY ================= */
 .eyebrow{font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--text-3)}
@@ -145,6 +169,8 @@ h4,.h4{font-size:22px;line-height:1.3;font-weight:600;margin:0 0 8px}
 
 /* ================= PRINT ================= */
 @media print{
+  body{display:block;width:auto;height:auto;overflow:visible}
+  .deck{transform:none;width:100%;height:auto}
   .slide{position:relative;opacity:1!important;transform:none!important;page-break-after:always;height:100vh}
   .deck-header,.deck-footer,.progress-bar,.notes-overlay,.overview{display:none!important}
 }
