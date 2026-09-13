@@ -211,6 +211,10 @@ chart-pie · chart-radar · arch-diagram · process-steps · cta · thanks
 # 从 base 模板新建一个 deck
 ./scripts/new-deck.sh my-talk
 
+# 也可以指定完整 deck 模板和任意输出目录。
+# assets 路径会按 deck 的实际位置算出来，并逐条校验能否解析。
+./scripts/new-deck.sh my-talk ~/decks -t pitch-deck
+
 # 浏览所有内容
 open templates/theme-showcase.html         # 全部 36 主题（iframe 隔离）
 open templates/layout-showcase.html        # 全部 31 布局

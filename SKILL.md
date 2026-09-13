@@ -105,7 +105,9 @@ Only after those are clear, scaffold the deck and start writing.
    ./scripts/new-deck.sh my-talk
    open examples/my-talk/index.html
    ```
-2. **Pick a theme.** Open the deck and press `T` to cycle. Or hard-code it:
+2. **Pick a theme.** Open the deck and press `T` to cycle. Or hard-code it
+   (`../assets/` here is a placeholder — use whatever prefix the rest of the
+   file already uses; `new-deck.sh` has set it to the right depth):
    ```html
    <link rel="stylesheet" id="theme-link" href="../assets/themes/aurora.css">
    ```
@@ -118,10 +120,15 @@ Only after those are clear, scaffold the deck and start writing.
    For canvas FX, use `<div data-fx="knowledge-graph">...</div>` and include
    `<script src="../assets/animations/fx-runtime.js"></script>`.
    Catalog in [references/animations.md](references/animations.md).
-5. **Use a full-deck template.** Copy `templates/full-decks/<name>/` into
-   `examples/my-talk/` as a starting point. Each folder is self-contained with
-   scoped CSS. Catalog in [references/full-decks.md](references/full-decks.md)
-   and gallery at `templates/full-decks-index.html`.
+5. **Use a full-deck template.** Scaffold from it, don't copy it by hand —
+   the template's `../../../assets/` is relative to *its own* location, so a
+   manual copy lands the paths at the wrong depth:
+   ```bash
+   ./scripts/new-deck.sh my-talk -t pitch-deck
+   ```
+   Each folder is self-contained with scoped CSS. Catalog in
+   [references/full-decks.md](references/full-decks.md) and gallery at
+   `templates/full-decks-index.html`.
 6. **Render to PNG.**
    ```bash
    ./scripts/render.sh templates/theme-showcase.html       # one shot
@@ -139,8 +146,16 @@ Only after those are clear, scaffold the deck and start writing.
   a new `templates/single-page/*.html` if none of the 30 fit.
 - **Respect chrome slots.** `.deck-header`, `.deck-footer`, `.slide-number`
   and the progress bar are provided by `assets/base.css` + `runtime.js`.
-- **Keyboard-first.** Always include `<script src="../assets/runtime.js"></script>`
-  so the deck supports ← → / T / A / F / S / O / hash deep-links.
+- **Keyboard-first.** Always include the runtime, e.g.
+  `<script src="../assets/runtime.js"></script>`, so the deck supports
+  ← → / T / A / F / S / O / hash deep-links.
+- **Never hand-edit the `../` depth in asset paths.** Every `assets/` reference
+  is relative to the file that holds it: `templates/deck.html` uses
+  `../assets/`, `templates/single-page/*.html` use `../../assets/`, and
+  `templates/full-decks/*/index.html` use `../../../assets/`. Copying a file to
+  a new depth silently breaks all of them. Scaffold with
+  `./scripts/new-deck.sh <name> [parent] [-t <template>]`, which computes the
+  prefix for wherever the deck lands and verifies every reference resolves.
 - **One `.slide` per logical page.** `runtime.js` makes `.slide.is-active`
   visible; all others are hidden.
 - **Supply notes.** Wrap speaker notes in `<div class="notes">…</div>` inside

@@ -213,6 +213,10 @@ module auto-initialised on slide enter via `fx-runtime.js`.
 # Scaffold a new deck from the base template
 ./scripts/new-deck.sh my-talk
 
+# ...or from a full-deck template, into any directory you like.
+# Asset paths are computed for wherever the deck lands, then verified.
+./scripts/new-deck.sh my-talk ~/decks -t pitch-deck
+
 # Browse everything
 open templates/theme-showcase.html         # all 36 themes (iframe-isolated)
 open templates/layout-showcase.html        # all 31 layouts
