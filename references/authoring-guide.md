@@ -48,12 +48,15 @@ layout twice in a row.
 ## 4. Scaffold the deck
 
 ```bash
-./scripts/new-deck.sh my-talk
+./scripts/new-deck.sh my-talk                    # base template -> examples/my-talk/
+./scripts/new-deck.sh my-talk . -t pitch-deck    # full-deck template, into ./my-talk/
+./scripts/new-deck.sh my-talk ~/decks            # anywhere, inside the skill or not
 ```
 
-This copies `templates/deck.html` into `examples/my-talk/index.html` with
-paths rewritten. Add/remove `<section class="slide">` blocks to match your
-outline.
+This copies the chosen template into `<parent>/my-talk/index.html` and rewrites
+every `assets/` reference to the prefix that is correct for **that** location,
+then verifies each one resolves before reporting success. Add/remove
+`<section class="slide">` blocks to match your outline.
 
 ## 5. Author each slide
 
